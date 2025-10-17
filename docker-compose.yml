@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: strapi_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: strapi
+      POSTGRES_DB: strapi
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  strapi:
+    build: .
+    container_name: strapi_app
+    depends_on:
+      - db
+    restart: unless-stopped
+    environment:
+      NODE_ENV: "production"
+      HOST: "0.0.0.0"
+      PORT: "1337"
+      # URL pública da sua VPS (ajuste para seu domínio)
+      # importante para links absolutos e upload providers
+      APP_URL: "https://apibrazzo.zeroproblem.com.br"
+      # Chaves e segredos (gere novos valores em produção!)
+      APP_KEYS: "a_random1,a_random2,a_random3,a_random4"
+      API_TOKEN_SALT: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTc2MDcyNTg2NH0.Oklp57rGgfXyj2Q-zMyOUaxzX34XMj0u8nOd0HK6Q0o"
+      ADMIN_JWT_SECRET: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTc2MDcyNTgzMX0.7PHMitqFKfkgu0Y9IakcqYFo3lvS5SWKKhwA_kH36gI"
+      TRANSFER_TOKEN_SALT: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTc2MDcyNTg0OX0.YAJtZGrm_c6s0OYZKyCFBB4FvFOjGIbiV4tzEOzmdlo"
+      JWT_SECRET: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTc2MDcyNTg5N30.gsrqxO_3X1EpfG3qwTCVFgkSenISgOFwHnoOM8Mavdo"
+      # Config DB (Strapi v5 lê via config/database.* usando env)
+      DATABASE_CLIENT: "postgres"
+      DATABASE_HOST: "db"
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: "strapi"
+      DATABASE_USERNAME: "strapi"
+      DATABASE_PASSWORD: "strapi"
+      DATABASE_SSL: "false"
+    ports:
+      - "1337:1337"
+    volumes:
+      - ./public/uploads:/app/public/uploads
+volumes:
+  db_data:
