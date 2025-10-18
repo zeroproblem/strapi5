@@ -66,4 +66,8 @@ EXPOSE 1337
 USER strapi
 
 # Inicia em modo produção (usa seu script "start")
-CMD [ "npm", "run", "start" ]
+#CMD [ "npm", "run", "start" ]
+
+#npx create-strapi@latest my-strapi-project
+CMD [ "npx", "create-strapi@latest", "brazzo-api" ]
+
